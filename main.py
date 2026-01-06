@@ -829,8 +829,11 @@ def run_genin2(flagsdict, samples_p, filename, reports_p):
 
 #### MAIN
 def parser():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    default_config = 'config.ini' if os.path.exists('config.ini') else os.path.join(script_dir, 'config.ini')
+    
     parser=argparse.ArgumentParser(prog='AFluID',description='AFluID: Automated Influenza Identification Pipeline')
-    parser.add_argument('-c','--config',type=str,help='Configuration file path',default='config.ini',required=False)
+    parser.add_argument('-c','--config',type=str,help='Configuration file path',default=default_config,required=False)
     parser.add_argument('-f','--filename',type=str,help='FASTA file name',required=True)
     parser.add_argument('-m','--mode',type=str,help='Mode of operation', choices=('contig','consensus'), required=True)
     parser.add_argument('-ff','--force',help='Force run of aditional tools',nargs='*',choices=('flumut','genin','getref'))
@@ -883,25 +886,30 @@ def main(flagdict=flagdict):
             print(f'Turning off: {i}')
             flags['Master'][i]=False
     #### SET PATHS
-    samples=config['Paths']['samples']
-    runs=config['Paths']['runs']
-    references=config['Paths']['references']
-    reports=config['Paths']['reports']
-    logs=config['Paths']['logs']
-    blasts=config['Paths']['blast_database']
-    clusters=config['Paths']['cluster_database']
-    metadata=config['Paths']['metadata']
+    config_dir = os.path.dirname(os.path.abspath(config_file))
+    cwd = os.getcwd()
+
+    def resolve_path(relative_path):
+        if os.path.isabs(relative_path):
+            return relative_path
+        # 1. Try relative to CWD
+        path_cwd = os.path.abspath(os.path.join(cwd, relative_path))
+        if os.path.exists(path_cwd):
+            return path_cwd
+        # 2. Try relative to config file directory (install dir)
+        return os.path.abspath(os.path.join(config_dir, relative_path))
+
+    samples_p = resolve_path(config['Paths']['samples'])
+    runs_p = resolve_path(config['Paths']['runs'])
+    references_p = resolve_path(config['Paths']['references'])
+    reports_p = resolve_path(config['Paths']['reports'])
+    logs_p = resolve_path(config['Paths']['logs'])
+    blasts_p = resolve_path(config['Paths']['blast_database'])
+    clusters_p = resolve_path(config['Paths']['cluster_database'])
+    metadata_p = resolve_path(config['Paths']['metadata'])
+    
     rm_previous=config['Functions']['remove_previous'] if\
           args.remove_previous.lower()=='on' else False
-    cwd=os.getcwd()
-    samples_p=os.path.abspath(os.path.join(cwd,samples))
-    runs_p=os.path.abspath(os.path.join(cwd,runs))
-    references_p=os.path.abspath(os.path.join(cwd,references))
-    reports_p=os.path.abspath(os.path.join(cwd,reports))
-    logs_p=os.path.abspath(os.path.join(cwd,logs))
-    blasts_p=os.path.abspath(os.path.join(cwd,blasts))
-    clusters_p=os.path.abspath(os.path.join(cwd,clusters))
-    metadata_p=os.path.abspath(os.path.join(cwd,metadata))
     print('Single sample mode:',single)
     print('Remove previous files:',rm_previous)
     print('Configuration file:',config_file)
