@@ -1,4 +1,6 @@
 # AFluID
+![CI Status](https://github.com/dsobral/AFluID/actions/workflows/ci.yml/badge.svg)
+
 Pipeline for Influenza A virus segment and genotype identification though homolgy clustering and local alignment
 
 ## Installation
