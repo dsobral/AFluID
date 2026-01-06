@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Miniconda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        activate-environment: fluid
+        environment-file: env.yaml
+        python-version: '3.10'
+        auto-activate-base: false
+        channels: bioconda,conda-forge,defaults
+
+    - name: Install Test Dependencies
+      run: |
+        conda install pytest
+
+    - name: Run Tests
+      run: |
+        pytest tests/

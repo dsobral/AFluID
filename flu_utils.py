@@ -540,14 +540,14 @@ def mine_genotype_H(list_of_genotypes):
     return part_genos
 def mine_single_HA(str):
     part_h=r'H\d{1,2}'
-    lookup_H=re.match(part_h,str)
+    lookup_H=re.search(part_h,str)
     if lookup_H:
         return lookup_H.group()
     else:
         return 'UD'
 def mine_single_NA(str):
     part_n=r'N\d{1,2}'
-    lookup_N=re.match(part_n,str)
+    lookup_N=re.search(part_n,str)
     if lookup_N:
         return lookup_N.group()
     else:
