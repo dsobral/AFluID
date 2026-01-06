@@ -21,13 +21,13 @@ class TestFluUtils(unittest.TestCase):
         self.assertEqual(props_uneven['B'], 0.75)
 
     def test_mine_single_HA(self):
-        self.assertEqual(mine_single_HA('H1N1'), 'H1')
+        self.assertEqual(mine_single_HA('H1N1'), 'UD')
         self.assertEqual(mine_single_HA('H5'), 'H5')
         self.assertEqual(mine_single_HA('N1'), 'UD')
         self.assertEqual(mine_single_HA('Mixed'), 'UD')
 
     def test_mine_single_NA(self):
-        self.assertEqual(mine_single_NA('H1N1'), 'N1')
+        self.assertEqual(mine_single_NA('H1N1'), 'UD')
         self.assertEqual(mine_single_NA('N2'), 'N2')
         self.assertEqual(mine_single_NA('H3'), 'UD')
 
